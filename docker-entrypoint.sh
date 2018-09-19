@@ -26,11 +26,11 @@ SECRETS_FILE="/run/secrets/${SECRETS}"
 if [ -f ${SECRETS_FILE} ]; then
     info "Found a secret file: ${SECRETS_FILE}"
     
-    GALERA_DONER_SERVICE=$(crudini --get ${SECRETS_FILE} cluster cluster_doner)
-    GALERA_CLUSTER_NAME=$(crudini --get ${SECRETS_FILE} cluster cluster_name)
-    MAXSCALE_USER=$(crudini --get ${SECRETS_FILE} database db_user)
-    MAXSCALE_PASSWORD=$(crudini --get ${SECRETS_FILE} database db_password)
-    DEFAULT_DB_SCHEMA=$(crudini --get ${SECRETS_FILE} database db_schema)
+    GALERA_DONER_SERVICE=$(crudini --get ${SECRETS_FILE} database cluster_doner)
+    GALERA_CLUSTER_NAME=$(crudini --get ${SECRETS_FILE} database cluster_name)
+    MAXSCALE_USER=$(crudini --get ${SECRETS_FILE} database user)
+    MAXSCALE_PASSWORD=$(crudini --get ${SECRETS_FILE} database password)
+    DEFAULT_DB_SCHEMA=$(crudini --get ${SECRETS_FILE} database default_schema)
 fi
 
 if [ -n "${GALERA_DONER_SERVICE}" ]; then
