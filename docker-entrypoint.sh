@@ -33,39 +33,45 @@ if [ -f ${SECRETS_FILE} ]; then
     DEFAULT_DB_SCHEMA=$(crudini --get ${SECRETS_FILE} database default_schema)
 fi
 
-if [ -n "${GALERA_DONER_SERVICE}" ]; then
-    info "This node is one of galera joiners."
-    info "Finding a galera doner: ${GALERA_DONER_SERVICE}"
-    
-    for COUNT in {30..0}; do
-        if GALERA_DONER_ADDRESS=$(getent hosts tasks.${GALERA_DONER_SERVICE} | awk '{print $1}' | head -n 1); then
-            break;
-        fi
-        sleep 1
-    done
-    
-    if [ ${COUNT} -eq 0 ]; then
-        error "Failed to find a galera doner. Please check the status of it."
-        exit 1
-    fi
-    info "Succeed to find a galera doner: ${GALERA_DONER_ADDRESS}"
-    
-    GALERA_CLUSTER_ADDRESS="gcomm://${GALERA_DONER_ADDRESS}?pc.wait_prim=no"
-else
+if [ -z "${GALERA_DONER_SERVICE}" ]; then
+    error "The galera doner is not set."
+    exit 1
+fi
 
-    if [ -n ${DEFAULT_DB_SCHEMA} ]; then
+info "Try to find a galera doner: ${GALERA_DONER_SERVICE}"
+
+for COUNT in {30..0}; do
+    if GALERA_DONER_ADDRESS=$(getent hosts tasks.${GALERA_DONER_SERVICE} | awk '{print $1}' | head -n 1); then
+        break;
+    fi
+    sleep 2
+fi
+
+if [ -z "${GALERA_DONER_ADDRESS}"] && [ ${COUNT} -eq 0 ]; then
+    error "Failed to find a galera doner. Please check the status of it."
+    exit 1
+fi
+
+info "Succeed to find a galera doner: ${GALERA_DONER_ADDRESS}"
+
+if [ "${CURRENT_NODE_ADDRESS}" == "${GALERA_DONER_ADDRESS}" ]; then
+    info "This node is a galera doner."
+
+    if [ -n "${DEFAULT_DB_SCHEMA}" ]; then
         info "Found default schema..."
 
-cat<< EOF >> /docker-entrypoint-initdb.d/sql-account-maxscale.sql
+cat<< EOF >> /docker-entrypoint-initdb.d/sql-default-schema.sql
 CREATE SCHEMA IF NOT EXISTS ${DEFAULT_DB_SCHEMA} CHARACTER SET = UTF8MB4 ;
 
 EOF
-
     fi
+else
+    info "This node is one of galera joiners."
+    GALERA_CLUSTER_ADDRESS="gcomm://${GALERA_DONER_ADDRESS}?pc.wait_prim=no"
 fi
 
-info "Generate Galera Cluster configuration file..."
 
+info "Generate Galera Cluster configuration file..."
 
 cat<<EOF >> /etc/mysql/conf.d/galera-cluster.cnf
 [mysqld]
@@ -103,7 +109,7 @@ EOF
 if [ -z ${MAXSCALE_USER} ] || [ -z ${MAXSCALE_PASSWORD} ]; then
     warning "Maxscale account has non-zero user name and password. Only Galera Cluster is built."
 else
-cat<< EOF >> /docker-entrypoint-initdb.d/sql-default-schema.sql
+cat<< EOF >> /docker-entrypoint-initdb.d/sql-account-maxscale.sql
 CREATE USER '${MAXSCALE_USER}'@'%' IDENTIFIED BY '${MAXSCALE_PASSWORD}' ;
 GRANT SELECT ON mysql.user TO '${MAXSCALE_USER}'@'%' ;
 GRANT SELECT ON mysql.db TO '${MAXSCALE_USER}'@'%' ;

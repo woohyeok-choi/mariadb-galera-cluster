@@ -60,6 +60,6 @@ Docker compose above has two different services (but same image), cluster-doner 
 
 ## Environment variables
 * (require) **GALERA_CLUSTER_NAME**: the name of your galera cluster
-* (require in joiners) **GALERA_DONER_SERVICE**: the service name of the doner of Galera Cluster.
+* (require) **GALERA_DONER_SERVICE**: the service name of the doner of Galera Cluster.
 * MYSQL_USER, MYSQL_PASSWORD: same as MariaDB's [Docker image](https://hub.docker.com/_/mariadb/)
 * **MAXSCALE_USER**, **MAXSCALE_PASSWORD**: Maxscale account info. when you want to use Maxscale.
