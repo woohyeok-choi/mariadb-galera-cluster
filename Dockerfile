@@ -8,9 +8,8 @@ RUN apt-get update \
     
 RUN pip2 install --no-cache-dir crudini
 
-RUN touch /docker-entrypoint-initdb.d/docker-entrypoint-default.sql \ 
-            /docker-entrypoint-initdb.d/docker-entrypoint-schema.sql \ 
-            /docker-entrypoint-initdb.d/docker-entrypoint-maxscale.sql \
+RUN touch /docker-entrypoint-initdb.d/sql-default-schema.sql \ 
+            /docker-entrypoint-initdb.d/sql-account-maxscale.sql \ 
             /etc/mysql/conf.d/galera-cluster.cnf \
     && chown mysql:mysql -R /docker-entrypoint-initdb.d \
     && chown mysql:mysql -R /etc/mysql/conf.d/ 

@@ -56,7 +56,7 @@ else
     if [ -n ${DEFAULT_DB_SCHEMA} ]; then
         info "Found default schema..."
 
-cat<< EOF >> /docker-entrypoint-initdb.d/docker-entrypoint-schema.sql
+cat<< EOF >> /docker-entrypoint-initdb.d/sql-account-maxscale.sql
 CREATE SCHEMA IF NOT EXISTS ${DEFAULT_DB_SCHEMA} CHARACTER SET = UTF8MB4 ;
 
 EOF
@@ -103,7 +103,7 @@ EOF
 if [ -z ${MAXSCALE_USER} ] || [ -z ${MAXSCALE_PASSWORD} ]; then
     warning "Maxscale account has non-zero user name and password. Only Galera Cluster is built."
 else
-cat<< EOF >> /docker-entrypoint-initdb.d/docker-entrypoint-maxscale.sql
+cat<< EOF >> /docker-entrypoint-initdb.d/sql-default-schema.sql
 CREATE USER '${MAXSCALE_USER}'@'%' IDENTIFIED BY '${MAXSCALE_PASSWORD}' ;
 GRANT SELECT ON mysql.user TO '${MAXSCALE_USER}'@'%' ;
 GRANT SELECT ON mysql.db TO '${MAXSCALE_USER}'@'%' ;
