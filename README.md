@@ -4,9 +4,10 @@ This image automatically setup [MariaDB's Galera Cluster](https://mariadb.com/kb
 
 It can be used with the [Maxscale image](https://github.com/woohyeok-choi/mariadb-maxscale).
 
-This image cannot be solely used; instead, it should be used in a docker compose.
+I strongly recommend to use this image in a Docker compose, not a single container.
 
 ## How to use
+
 ```bash
 docker stack deploy --compose-file your-compose-file-here your-docker-stack-name
 ```
@@ -56,10 +57,12 @@ networks:
     attachable: true
 ```
 
-Docker compose above has two different services (but same image), cluster-doner and cluster-joiners. The doner is responsible for initial setup for Galera clusters. So, you should set its replica to **only one**. The joiners are joined to a cluster after the doner competes initial setup. The number of its replicas should be equal to or greater than 2 (meaning that the number of nodes in your cluster should equal to or greater than 3).
+The Docker compose above has two different services (but same image), cluster-doner and cluster-joiners. The doner is responsible for initial setup for Galera clusters. So, you should set its replica to **only one**. The joiners are joined to a cluster after the doner competes initial setup. The number of its replicas should be equal to or greater than 2 (meaning that the number of nodes in your cluster should equal to or greater than 3).
 
 ## Environment variables
+
 * (require) **GALERA_CLUSTER_NAME**: the name of your galera cluster
 * (require) **GALERA_DONER_SERVICE**: the service name of the doner of Galera Cluster.
 * MYSQL_USER, MYSQL_PASSWORD: same as MariaDB's [Docker image](https://hub.docker.com/_/mariadb/)
-* **MAXSCALE_USER**, **MAXSCALE_PASSWORD**: Maxscale account info. when you want to use Maxscale.
+* **MAXSCALE_USER**, **MAXSCALE_PASSWORD**: Maxscale account when you want to use Maxscale.
+  * If you want to Maxscale DB load-balancer with this image, please see my Maxscale Docker [image](https://github.com/woohyeok-choi/mariadb-maxscale)
