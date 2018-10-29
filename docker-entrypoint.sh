@@ -51,7 +51,7 @@ for COUNT in {30..0}; do
     sleep 2
 done
 
-if [ -z "${GALERA_DONER_ADDRESS}"] && [ ${COUNT} -eq 0 ]; then
+if [ -z "${GALERA_DONER_ADDRESS}" ] && [ ${COUNT} -eq 0 ]; then
     error "Failed to find a galera doner. Please check the status of it."
     exit 1
 fi
