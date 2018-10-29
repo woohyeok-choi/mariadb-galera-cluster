@@ -21,16 +21,20 @@ GALERA_SST_PORT=4569
 
 GALERA_CLUSTER_ADDRESS="gcomm://"
 
-SECRETS_FILE="/run/secrets/${SECRETS}"
+SECRET_FILE="/run/secrets/${SECRET_NAME}"
 
-if [ -f ${SECRETS_FILE} ]; then
-    info "Found a secret file: ${SECRETS_FILE}"
+if [ -z ${INI_SECTION} ]; then
+    INI_SECTION=''
+fi
+
+if [ -f ${SECRET_FILE} ]; then
+    info "Found a secret file: ${SECRET_FILE}"
     
-    GALERA_DONER_SERVICE=$(crudini --get ${SECRETS_FILE} database cluster_doner)
-    GALERA_CLUSTER_NAME=$(crudini --get ${SECRETS_FILE} database cluster_name)
-    MAXSCALE_USER=$(crudini --get ${SECRETS_FILE} database user)
-    MAXSCALE_PASSWORD=$(crudini --get ${SECRETS_FILE} database password)
-    DEFAULT_DB_SCHEMA=$(crudini --get ${SECRETS_FILE} database default_schema)
+    GALERA_DONER_SERVICE=$(crudini --get ${SECRET_FILE} "${INI_SECTION}" cluster_doner)
+    GALERA_CLUSTER_NAME=$(crudini --get ${SECRET_FILE} "${INI_SECTION}" cluster_name)
+    MAXSCALE_USER=$(crudini --get ${SECRET_FILE} "${INI_SECTION}" maxscale_user)
+    MAXSCALE_PASSWORD=$(crudini --get ${SECRET_FILE} "${INI_SECTION}" maxscale_password)
+    DEFAULT_DB_SCHEMA=$(crudini --get ${SECRET_FILE} "${INI_SECTION}" default_schema)
 fi
 
 if [ -z "${GALERA_DONER_SERVICE}" ]; then

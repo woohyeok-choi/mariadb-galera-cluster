@@ -1,8 +1,6 @@
 FROM mariadb:latest
 LABEL MAINTAINER="Woohyeok Choi <woohyeok.choi@kaist.ac.kr>"
 
-ENV MYSQL_RANDOM_ROOT_PASSWORD yes
-
 RUN apt-get update \
     && apt-get install -y python python-pip 
     
