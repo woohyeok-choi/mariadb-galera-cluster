@@ -12,6 +12,9 @@ RUN touch /docker-entrypoint-initdb.d/sql-default-schema.sql \
     && chown mysql:mysql -R /docker-entrypoint-initdb.d \
     && chown mysql:mysql -R /etc/mysql/conf.d/ 
 
+RUN mkdir -p /home/wsrep/gcache \
+    && chown mysql:mysql -R /home/wsrep/
+
 RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 COPY ./docker-entrypoint.sh /docker-entrypoint-initdb.d/
 

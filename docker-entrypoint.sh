@@ -82,11 +82,12 @@ cat<<EOF >> /etc/mysql/conf.d/galera-cluster.cnf
 # wsrep options
 wsrep_cluster_name=${GALERA_CLUSTER_NAME}
 wsrep_on=ON
+wsrep_data_home_dir=/home/wsrep
 wsrep_provider=/usr/lib/galera/libgalera_smm.so
 wsrep_cluster_address=${GALERA_CLUSTER_ADDRESS}
 wsrep_node_address=${CURRENT_NODE_ADDRESS}:${GALERA_CLUSTER_PORT}
 wsrep_sst_method=rsync
-wsrep_provider_options="gcache.size=256M;base_port=${GALERA_CLUSTER_PORT};ist.recv_addr=${CURRENT_NODE_ADDRESS}:${GALERA_IST_PORT}" 
+wsrep_provider_options="gcache.size=256M;base_port=${GALERA_CLUSTER_PORT};ist.recv_addr=${CURRENT_NODE_ADDRESS}:${GALERA_IST_PORT};gcache.dir=/home/wsrep/gcache;" 
 wsrep_sst_receive_address=${CURRENT_NODE_ADDRESS}:${GALERA_SST_PORT}
 
 # general options
